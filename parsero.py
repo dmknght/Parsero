@@ -81,7 +81,8 @@ def conn_check(url, only200):
     pathlist = []
     salida = 1
     try:
-        for line in urllib.request.urlopen("http://" + url + "/robots.txt"):
+        # for line in urllib.request.urlopen("http://" + url + "/robots.txt"):
+        for line in urllib.request.urlopen("%s/robots.txt" %(url) if "robots.txt" not in url else url):
             lineStr = str(line, encoding='utf8')
             path = lineStr.split(': /')
             if "Disallow" == path[0]:
@@ -105,7 +106,8 @@ def conn_check(url, only200):
     count_ok = 0
 
     for p in pathlist:
-        disurl = "http://" + url + '/' + p
+        # disurl = "http://" + url + '/' + p
+        disurl = url + '/' + p
         r1 = http.request('GET', disurl, redirect=False, retries=5)
         if r1.status == 200:
             print(bcolors.OKGREEN + disurl + ' ' + str(r1.status) + ' ' + str(r1.reason) + bcolors.ENDC)
@@ -134,7 +136,8 @@ def search_bing(url, searchbing, only200):
 
         count = 0
         for p in pathlist:
-            disurl = "http://" + url + '/' + p
+            # disurl = "http://" + url + '/' + p
+            disurl = url + '/' + p
             opener = urllib.request.build_opener()
             opener.addheaders = [('User-agent', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:26.0) Gecko/20100101 Firefox/26.0')]
             url2 = "http://www.bing.com/search?q=site:" + disurl
@@ -163,7 +166,7 @@ def search_bing(url, searchbing, only200):
         print(bcolors.FAIL + 'You need to install Beautifulsoup. "sudo pip-3.3 install beautifulsoup4"' + bcolors.ENDC)
 
 def date(url):
-    print("Starting Parsero v0.81 (https://github.com/behindthefirewalls/Parsero) at " + time.strftime("%x") + " " + time.strftime("%X"))
+    print("Starting Parsero v0.82 Parrot Security OS edition (maintainer @DmKnght) at " + time.strftime("%x") + " " + time.strftime("%X"))
     print("Parsero scan report for " + url)
 
 def main():
@@ -201,8 +204,10 @@ def main():
     urls = list(set(urls))
     logo()
     for url in urls:
-        if url.find("http://") == 0:
-            url = url.replace("http://", "")
+        # if url.find("http://") == 0:
+        #     url = url.replace("http://", "")
+        if not url.startswith(("http://", "https://")):
+            url = "http://%s" %(url)
         start_time = time.time()
         only200 = args.only200
         searchbing = args.searchbing
