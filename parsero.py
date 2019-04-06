@@ -107,7 +107,7 @@ def conn_check(url, only200):
 
     for p in pathlist:
         # disurl = "http://" + url + '/' + p
-        disurl = url + '/' + p if "robots.txt" not in url else url.replace("robots.txt", "") + '/' + p
+        disurl = url + ('/' + p if url[-1] is not "/" else p) if "robots.txt" not in url else url.replace("/robots.txt", "") + '/' + p
         r1 = http.request('GET', disurl, redirect=False, retries=5)
         if r1.status == 200:
             print(bcolors.OKGREEN + disurl + ' ' + str(r1.status) + ' ' + str(r1.reason) + bcolors.ENDC)
@@ -219,4 +219,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
